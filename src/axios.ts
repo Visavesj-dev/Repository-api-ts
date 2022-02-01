@@ -21,7 +21,7 @@ export class Axios {
         return response.data;
       })
       .catch((err: Error) => {
-        console.log(err);
+        return err;
       });
   }
 

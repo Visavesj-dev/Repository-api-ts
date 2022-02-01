@@ -1,9 +1,10 @@
 import ApiRepository from "./apiRepository";
-import GetApi from "./apiController";
+import ApiController from "./ApiController";
 // view
 (() => {
-  const main = new ApiRepository(new GetApi());
-  main.getJsonData().then((res) => {
+  const main = new ApiRepository(new ApiController());
+
+  main.getJsonDataRepository().then((res) => {
     console.log(res);
   });
 })();
