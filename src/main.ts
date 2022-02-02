@@ -10,7 +10,7 @@ class Main implements MainView {
   }
 
   async getDataComment(): Promise<void> {
-    await this.controller.getDataCommentData();
+    await this.controller.getDataCommentData()
   }
 }
 

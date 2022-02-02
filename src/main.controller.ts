@@ -11,14 +11,8 @@ class MainController {
   }
 
   async getDataCommentData() {
-    await this.repo
-      .getJsonData()
-      .then((data) => {
-        return data;
-      })
-      .catch((err) => {
-        return err;
-      });
+    const data = await this.repo.getJsonData();
+    return data;
   }
 }
 

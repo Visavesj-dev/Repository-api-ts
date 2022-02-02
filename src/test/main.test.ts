@@ -17,23 +17,19 @@ describe("Mocks api call", () => {
 
   test("Test Mock getDataCommentData", async () => {
     // AAA
-    var mock = new MockAdapter(axios);
 
-    const MockData = {
-      data: [
-        {
-          postId: 19,
-          id: 94,
-          name: "vero repudiandae voluptatem nobis",
-          email: "Tatum_Marks@jaylon.name",
-        },
-      ],
-    };
+    const MockData = [
+      {
+        postId: 1,
+        id: 1,
+        name: "id labore ex et quam laborum",
+        email: "Eliseo@gardner.biz",
+        body: "laudantium enim quasi est quidem magnam voluptate ipsam eos tempora quo necessitatibus dolor quam autem quasi reiciendis et nam sapiente accusantium",
+      },
+    ];
 
-    // mock
-    //   .onGet("https://jsonplaceholder.typicode.com/comments")
-    //   .reply(200, MockData);
-
-    await main.getDataCommentData();
+    await main.getDataCommentData().then((response: any) => {
+      expect(response[0].id).toEqual(MockData[0].id);
+    });
   });
 });
