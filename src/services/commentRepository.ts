@@ -1,11 +1,7 @@
 import Axios from "./axios";
 
-export interface ApiControllerInterface {
-  getJsonData: () => void;
-}
-
 // Controller or Data Access
-class ApiController implements ApiControllerInterface {
+class CommentRepository {
   http: Axios;
 
   constructor() {
@@ -14,9 +10,9 @@ class ApiController implements ApiControllerInterface {
     });
   }
 
-  getJsonData = () => {
+  async getJsonData() {
     return this.http.get("/comments");
-  };
+  }
 }
 
-export default ApiController;
+export default CommentRepository;
