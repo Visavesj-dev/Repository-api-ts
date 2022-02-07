@@ -1,25 +1,50 @@
 import MainController from "../main.controller";
-import CommentRepository from "../services/commentRepository";
-import axios, { AxiosResponse } from "axios";
-import Main from "../main";
+import CommentRepository from "../services/comment.repository";
+import Main, { MainView } from "../main";
+import { mock } from "jest-mock-extended";
 
-jest.mock("axios", () => jest.fn());
+jest.mock("../services/comment.repository", () => {
+  const mockCallback = jest.fn();
+  return {
+    CommentRepository: jest.fn().mockImplementation(() => {
+      return {
+        getJsonData: jest.fn().mockImplementation(() => {
+          return mockCallback;
+        }),
+      };
+    }),
+  };
+});
 
 describe("Mocks api call", () => {
-  let main: any;
+  let controller: MainController;
+  let mockView: MainView;
+  let mockCommentRepo: CommentRepository;
 
   beforeAll(() => {
-    main = new MainController(new Main(), new CommentRepository());
+    mockView = mock<MainView>();
+    mockCommentRepo = mock<CommentRepository>();
+    controller = new MainController(mockView, mockCommentRepo);
   });
 
-  afterAll(() => {
-    main = null;
-  });
+  // afterAll(() => {
+  //   controller = null;
+  // });
 
-  test("Test Mock getDataCommentData", async () => {
-    // AAA
+  const mockCommentSuccess = (response: any) => {
+    (mockCommentRepo.getJsonData as jest.Mock).mockImplementation(() => {
+      return Promise.resolve(response)
+    })
+  }
 
-    const MockData = [
+  const mockCommentFailure = (message: string) => {
+    (mockCommentRepo.getJsonData as jest.Mock).mockImplementation(() => {
+      return Promise.reject(message)
+    })
+  }
+
+  test("calls comment api success", async () => {
+    const mockData = [
       {
         postId: 1,
         id: 1,
@@ -29,55 +54,14 @@ describe("Mocks api call", () => {
       },
     ];
 
-    await main.getDataCommentData().then((response: any) => {
-      expect(response[0].id).toEqual(MockData[0].id);
-    });
+    mockCommentSuccess(mockData)
+    await controller.getDataCommentData();
+    expect(mockView.setData).toHaveBeenCalledWith(mockData)
   });
 
-  // test("should return comment data", async () => {
-  //   const MockData = [
-  //     {
-  //       postId: 1,
-  //       id: 1,
-  //       name: "id labore ex et quam laborum",
-  //       email: "Eliseo@gardner.biz",
-  //       body: "laudantium enim quasi est quidem magnam voluptate ipsam eos tempora quo necessitatibus dolor quam autem quasi reiciendis et nam sapiente accusantium",
-  //     },
-  //   ];
-
-  //   //Prepare the response we want to get from axios
-  //   const mockedResponse: AxiosResponse = {
-  //     data: MockData,
-  //     status: 200,
-  //     statusText: "OK",
-  //     headers: {},
-  //     config: {},
-  //   };
-  //   // Make the mock return the custom axios response
-  //   const what = mockedAxios.get.mockResolvedValueOnce(mockedResponse);
-  //   console.log(what);
-  //   // expect(axios.get).not.toHaveBeenCalled();
-  //   // await main.getDataCommentData().then((data: any) => {
-  //   //   console.log(data);
-  //   // });
-  // });
-
-  // test("Test AxiosRequest", async () => {
-  //   const MockData = [
-  //     {
-  //       postId: 1,
-  //       id: 1,
-  //       name: "id labore ex et quam laborum",
-  //       email: "Eliseo@gardner.biz",
-  //       body: "laudantium enim quasi est quidem magnam voluptate ipsam eos tempora quo necessitatibus dolor quam autem quasi reiciendis et nam sapiente accusantium",
-  //     },
-  //   ];
-
-  //   axios.mockResolvedValueOnce(MockData);
-  //   const mock = await main.getDataCommentData();
-
-  //   console.log(mock);
-  //   // expect(mock).toEqual(MockData);
-  //   // expect(axios).toHaveBeenCalledTimes(1);
-  // });
+  test("calls comment api failure", async () => {
+    mockCommentFailure("error here");
+    await controller.getDataCommentData();
+    expect(mockView.setMessageError).toHaveBeenCalledWith("error here");
+  });
 });

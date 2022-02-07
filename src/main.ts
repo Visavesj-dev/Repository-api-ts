@@ -1,7 +1,10 @@
 import MainController from "./main.controller";
-import CommentRepository from "./services/commentRepository";
+import CommentRepository from "./services/comment.repository";
+import { CommentDao } from "./services/dao/comment";
+
 export interface MainView {
-  getDataComment(): Promise<void>;
+  getData(): Promise<void>;
+  setData(data: CommentDao[]): void;
   setMessageError(message: string): void;
 }
 
@@ -12,7 +15,11 @@ class Main implements MainView {
     this.controller = new MainController(this, new CommentRepository());
   }
 
-  async getDataComment(): Promise<void> {
+  setData(data: CommentDao[]): void {
+    console.log("data: ", data);
+  }
+
+  async getData(): Promise<void> {
     await this.controller.getDataCommentData();
   }
 
