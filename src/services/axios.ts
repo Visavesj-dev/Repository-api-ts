@@ -6,7 +6,7 @@ enum HttpMethod {
   GET = "GET",
 }
 
-export class Axios {
+export class BaseService {
   private httpClient: AxiosInstance;
 
   constructor(options: AxiosConfig = {}) {
@@ -15,20 +15,15 @@ export class Axios {
 
   private apiRequest<T>(config: AxiosConfig) {
     const request = this.httpClient.request<T>(config);
-
-    return request
-      .then((response) => {
-        return response.data;
-      })
-      .catch((err: Error) => {
-        return err;
-      });
+    return request.then((response) => {
+      return response.data;
+    });
   }
 
-  public get<T>(url: string) {
+  protected get<T>(url: string) {
     const request = { method: HttpMethod.GET, url };
     return this.apiRequest<T>(request);
   }
 }
 
-export default Axios;
+export default BaseService;
