@@ -1,6 +1,9 @@
-import { MainView } from "./main.view";
 import MainController from "./main.controller";
 import CommentRepository from "./services/commentRepository";
+export interface MainView {
+  getDataComment(): Promise<void>;
+  setMessageError(message: string): void;
+}
 
 class Main implements MainView {
   private controller: MainController;
@@ -10,7 +13,11 @@ class Main implements MainView {
   }
 
   async getDataComment(): Promise<void> {
-    await this.controller.getDataCommentData()
+    await this.controller.getDataCommentData();
+  }
+
+  setMessageError(message: string): void {
+    console.log("This is Error", message);
   }
 }
 

@@ -1,4 +1,4 @@
-import { MainView } from "./main.view";
+import { MainView } from "./main";
 import CommentRepository from "./services/commentRepository";
 
 class MainController {
@@ -11,8 +11,12 @@ class MainController {
   }
 
   async getDataCommentData() {
-    const data = await this.repo.getJsonData();
-    return data;
+    try {
+      const data = await this.repo.getJsonData();
+      console.log("data", data);
+    } catch (err: any) {
+      this.view.setMessageError(err);
+    }
   }
 }
 
